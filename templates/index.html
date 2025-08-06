@@ -1,0 +1,235 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Personality Prediction</title>
+    <style>
+        :root {
+            --primary-color: #5d5fef;
+            --secondary-color: #6c757d;
+            --accent-color: #ff6b6b;
+            --light-bg: #f8f9fa;
+            --text-color: #2c3e50;
+            --border-radius: 6px;
+            --box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+            --transition: all 0.2s ease;
+        }
+        
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            line-height: 1.5;
+            color: var(--text-color);
+            background-color: #f5f7fa;
+            margin: 0;
+            padding: 20px;
+        }
+        
+        .container {
+            max-width: 500px;
+            margin: 0 auto;
+            background: white;
+            padding: 25px;
+            border-radius: var(--border-radius);
+            box-shadow: var(--box-shadow);
+        }
+        
+        h2 {
+            color: var(--primary-color);
+            text-align: center;
+            margin-bottom: 20px;
+            font-size: 1.5rem;
+            font-weight: 600;
+        }
+        
+        .form-group {
+            margin-bottom: 15px;
+        }
+        
+        label {
+            display: block;
+            margin-bottom: 6px;
+            font-size: 0.9rem;
+            font-weight: 500;
+            color: var(--secondary-color);
+        }
+        
+        input[type="number"] {
+            width: 100%;
+            padding: 10px;
+            border: 1px solid #ddd;
+            border-radius: var(--border-radius);
+            font-size: 0.9rem;
+            transition: var(--transition);
+        }
+        
+        input[type="number"]:focus {
+            border-color: var(--primary-color);
+            outline: none;
+            box-shadow: 0 0 0 2px rgba(93, 95, 239, 0.2);
+        }
+        
+        .radio-group {
+            display: flex;
+            gap: 15px;
+            margin-top: 5px;
+        }
+        
+        .radio-option {
+            display: flex;
+            align-items: center;
+            font-size: 0.9rem;
+        }
+        
+        .radio-option input[type="radio"] {
+            margin-right: 6px;
+            width: 16px;
+            height: 16px;
+        }
+        
+        .submit-btn {
+            background-color: var(--primary-color);
+            color: white;
+            border: none;
+            padding: 10px 20px;
+            font-size: 0.9rem;
+            border-radius: var(--border-radius);
+            cursor: pointer;
+            transition: var(--transition);
+            display: block;
+            width: 100%;
+            font-weight: 600;
+            margin-top: 20px;
+        }
+        
+        .submit-btn:hover {
+            background-color: #4a4bd6;
+        }
+        
+        .alert {
+            position: fixed;
+            top: 20px;
+            left: 50%;
+            transform: translateX(-50%);
+            padding: 12px 20px;
+            background-color: #4CAF50;
+            color: white;
+            border-radius: var(--border-radius);
+            box-shadow: 0 4px 12px rgba(0,0,0,0.15);
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            max-width: 400px;
+            width: 90%;
+            z-index: 1000;
+            animation: slideIn 0.3s ease-out;
+        }
+        
+        .alert-close {
+            background: none;
+            border: none;
+            color: white;
+            font-size: 1.2rem;
+            cursor: pointer;
+            padding: 0 0 0 10px;
+        }
+        
+        @keyframes slideIn {
+            from {
+                top: -50px;
+                opacity: 0;
+            }
+            to {
+                top: 20px;
+                opacity: 1;
+            }
+        }
+        
+        .form-header p {
+            color: var(--secondary-color);
+            margin-top: 5px;
+            font-size: 0.85rem;
+            text-align: center;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="form-header">
+            <h2>Personality Assessment</h2>
+            <p>Answer these questions to get your personality prediction</p>
+        </div>
+        
+        <form action="/" method="post">
+            <div class="form-group">
+                <label for="Time_spent_Alone">How many hours per day do you usually spend alone by choice?</label>
+                <input type="number" step="any" name="time_spent_alone" min="0" max="10" required>
+            </div>
+            
+            <div class="form-group">
+                <label>Do you feel nervous or anxious when speaking in front of a group?</label>
+                <div class="radio-group">
+                    <div class="radio-option">
+                        <input type="radio" id="stage_fear_yes" name="stage_fear" value="1" required>
+                        <label for="stage_fear_yes">Yes</label>
+                    </div>
+                    <div class="radio-option">
+                        <input type="radio" id="stage_fear_no" name="stage_fear" value="0">
+                        <label for="stage_fear_no">No</label>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="form-group">
+                <label for="Social_event_attendance">How often do you attend social events or gatherings in a month?</label>
+                <input type="number" step="any" name="social_event_attendance" min="0" max="100" required>
+            </div>
+            
+            <div class="form-group">
+                <label for="Going_outside">How frequently do you like going outside for non-essential activities (e.g., walks, meetups)?</label>
+                <input type="number" step="any" name="going_outside" min="0" max="100" required>
+            </div>
+            
+            <div class="form-group">
+                <label>Do you feel emotionally drained after spending time with people?</label>
+                <div class="radio-group">
+                    <div class="radio-option">
+                        <input type="radio" id="drained_yes" name="drained_after_socializing" value="1" required>
+                        <label for="drained_yes">Yes</label>
+                    </div>
+                    <div class="radio-option">
+                        <input type="radio" id="drained_no" name="drained_after_socializing" value="0">
+                        <label for="drained_no">No</label>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="form-group">
+                <label for="Friends_circle_size">How many close friends do you have that you talk to regularly?</label>
+                <input type="number" step="any" name="friends_circle_size" min="0" required>
+            </div>
+            
+            <div class="form-group">
+                <label for="Post_frequency">How often do you post or share content on social media?</label>
+                <input type="number" step="any" name="post_frequency" min="0" required>
+            </div>
+            
+            <button type="submit" class="submit-btn">Get Prediction</button>
+        </form>
+    </div>
+
+    {% if prediction %}
+    <div class="alert" id="predictionAlert">
+        <span>{{ prediction }}</span>
+        <button class="alert-close" onclick="document.getElementById('predictionAlert').style.display='none'">×</button>
+    </div>
+    <script>
+        // Auto-hide the alert after 5 seconds
+        setTimeout(function() {
+            var alert = document.getElementById('predictionAlert');
+            if (alert) {
+                alert.style.display = 'none';
+            }
+        }, 5000);
+    </script>
+    {% endif %}
+</body>
+</html>
