@@ -1,37 +1,42 @@
-from flask import Flask, render_template, request
-import joblib
+import joblib as jb
 import pandas as pd
+from fastapi import FastAPI
+from typing import Annotated, Literal
+from pydantic import BaseModel, Field
+from fastapi.responses import JSONResponse
 
-app = Flask(__name__)
+with open('model.pkl', 'rb') as f:
+    model = jb.load(f)
 
-# Load the pipeline
-pipeline = joblib.load('model.pkl')
+app = FastAPI()
 
-# Define input columns in order
-all_columns = ['time_spent_alone', 'social_event_attendance', 'going_outside',
-               'friends_circle_size', 'post_frequency',
-               'drained_after_socializing', 'stage_fear']
+@app.get('/')
+def home():
+    return {'message': 'Hello'}
 
-@app.route('/', methods=['GET', 'POST'])
-def index():
-    prediction = None
-    if request.method == 'POST':
-        input_data = {}
-        for col in all_columns:
-            input_data[col] = request.form.get(col, type=float)
 
-        df = pd.DataFrame([input_data])
+class UserInput(BaseModel):
+    time_spent_alone: Annotated[float, Field(..., gt=0, description='time spent alone')]
+    stage_fear: Annotated[Literal['Yes', 'No'], Field(..., description='You have stage fear or not')]
+    social_event_attendance: Annotated[float, Field(..., gt=0, description='Social event attendance')]
+    going_outside: Annotated[float, Field(..., gt=0, description='Going outside')]
+    drained_after_socializing: Annotated[Literal['Yes', 'No'], Field(..., description='Have you ever drained after socializing')]
+    friends_circle_size: Annotated[float, Field(..., gt=0, description='Friend circle size')]
+    post_frequency: Annotated[float, Field(..., gt=0, description='Post Frequency')]
 
-        # Predict using the pipeline
-        result = pipeline.predict(df)[0]
-        label_map = {
-            0: "You are Extrovert",
-            1: "You are Introvert"
-        }
-        prediction = label_map.get(result, f"Unknown Prediction: {result}")
-        # prediction = f"Prediction: {result}"
 
-    return render_template('index.html', columns=all_columns, prediction=prediction)
+@app.post('/predict')
+def prediction(user_data: UserInput):
 
-if __name__ == '__main__':
-    app.run(debug=True)
+    input = pd.DataFrame([{
+        'time_spent_alone': user_data.time_spent_alone,
+        'stage_fear': user_data.stage_fear,
+        'social_event_attendance': user_data.social_event_attendance,
+        'going_outside': user_data.going_outside,
+        'drained_after_socializing': user_data.drained_after_socializing,
+        'friends_circle_size': user_data.friends_circle_size,
+        'post_frequency': user_data.post_frequency
+    }])
+
+    prediction = model.predict(input)
+    raise JSONResponse(200, content= {'prediction': prediction})
