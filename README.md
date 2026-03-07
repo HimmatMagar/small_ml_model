@@ -1,3 +1,0 @@
-﻿# small_ml_model
-
-Some small changes
